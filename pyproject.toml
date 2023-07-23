@@ -10,11 +10,13 @@ packages = [{include = "elasticsearch_connection"}]
 python = "^3.11"
 elasticsearch = "^8.8.2"
 streamlit = "^1.25.0"
+pandas = "^2.0.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
 isort = "^5.12.0"
 ruff = "^0.0.280"
+pytest = "^7.4.0"
 
 [tool.pyright]
 venvPath = "."
