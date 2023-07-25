@@ -5,9 +5,9 @@ import streamlit as st
 
 from elasticsearch_connection import ElasticsearchConnection
 
-st.set_page_config(page_title="Experimental ES Connection")
+st.set_page_config(page_title="Experimental ES Connection", page_icon=":deer:")
 
-st.title("Elasticsearch Experimental Connection")
+st.title("Elasticsearch :deer: Experimental Connection")
 
 with st.echo():
     conn = st.experimental_connection("elasticsearch", type=ElasticsearchConnection)
