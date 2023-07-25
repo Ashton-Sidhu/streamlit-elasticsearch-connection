@@ -25,14 +25,14 @@ For auth methods, you must either use:
 # .streamlit/secrets.toml
 
 [connections.elasticsearch]
-cloud_id = ...
-# hosts = ...
+cloud_id = "..."
+# hosts = "..."
 
-user = ...
-password = ...
+user = "..."
+password = "..."
 
-# api_id = ...
-# api_key = ...
+# api_id = "..."
+# api_key = "..."
 ```
 
 Then in your streamlit script:
