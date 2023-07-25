@@ -52,6 +52,28 @@ class ElasticsearchConnection(ExperimentalBaseConnection[elasticsearch.Elasticse
         ttl: int = 3600,
         **kwargs
     ) -> pd.DataFrame:
+        """
+        Queries an Elasticsearch index and returns the results as a Pandas DataFrame.
+
+        Parameters
+        ----------
+        index: str
+            Elasticsearch index to query.
+
+        columns: List[str]
+            Fields in the Elasticsearch index to select. Defaults to all fields.
+
+        query: Dict[str, str | int | datetime]
+            Elasticsearch query to filter data in the index. Defaults to None, all data from the index gets fetched.
+
+        ttl: int
+            How long to keep data cached in seconds. Defaults to 3600s (1h)
+
+        Returns
+        -------
+        df: pandas.DataFrame
+        """
+
         @cache_data(ttl=ttl)
         def _query(index, query, **kwargs) -> pd.DataFrame:
             es_df = ed.DataFrame(self.client, es_index_pattern=index, columns=columns)
