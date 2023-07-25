@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 import eland as ed
+import elastic_transport
 import elasticsearch
 import pandas as pd
 from streamlit.connections import ExperimentalBaseConnection
@@ -50,7 +51,6 @@ class ElasticsearchConnection(ExperimentalBaseConnection[elasticsearch.Elasticse
         columns: Optional[List[str]] = None,
         query: Optional[Dict[str, Any]] = None,
         ttl: int = 3600,
-        **kwargs
     ) -> pd.DataFrame:
         """
         Queries an Elasticsearch index and returns the results as a Pandas DataFrame.
@@ -63,7 +63,7 @@ class ElasticsearchConnection(ExperimentalBaseConnection[elasticsearch.Elasticse
         columns: List[str]
             Fields in the Elasticsearch index to select. Defaults to all fields.
 
-        query: Dict[str, str | int | datetime]
+        query: Dict[Any]
             Elasticsearch query to filter data in the index. Defaults to None, all data from the index gets fetched.
 
         ttl: int
@@ -75,7 +75,7 @@ class ElasticsearchConnection(ExperimentalBaseConnection[elasticsearch.Elasticse
         """
 
         @cache_data(ttl=ttl)
-        def _query(index, query, **kwargs) -> pd.DataFrame:
+        def _query(index, query) -> pd.DataFrame:
             es_df = ed.DataFrame(self.client, es_index_pattern=index, columns=columns)
 
             if query:
@@ -83,7 +83,25 @@ class ElasticsearchConnection(ExperimentalBaseConnection[elasticsearch.Elasticse
 
             return es_df.to_pandas()
 
-        return _query(index=index, query=query, **kwargs)
+        return _query(index=index, query=query)
 
-    def index(self, *, index: str, doc: Dict[str, Any], **kwargs) -> None:
-        self.client.index(index=index, document=doc, **kwargs)
+    def insert(self, *, index: str, doc: Dict[str, Any], **kwargs) -> elastic_transport.ObjectApiResponse:
+        """
+        Inserts a document into an Elasticsearch index.
+
+        Parameters
+        ----------
+        index: str
+            Elasticsearch index.
+
+        doc: Dict[Any]
+            Document to insert into Elasticsearch index.
+
+        kwargs:
+            Keyword arguments to pass into `elasticsearch.Elasticsearch.index` function https://elasticsearch-py.readthedocs.io/en/v8.8.2/api.html#elasticsearch.Elasticsearch.index.
+
+        Returns
+        -------
+        elastic_transport.ObjectApiResponse: Response object with response details.
+        """
+        return self.client.index(index=index, document=doc, **kwargs)
