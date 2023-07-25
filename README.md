@@ -1,11 +1,11 @@
 # Streamlit Elasticsearch Connection
 
-Connect to a Elasticsearch cluster from your Streamlit app. Powered by `st.experimental_connection()` and [Elasticsearch]().
+Connect to a Elasticsearch cluster from your Streamlit app. Powered by `st.experimental_connection()` and [Elasticsearch](https://github.com/elastic/elasticsearch-py).
 
 ## Install
 
 ```
-pip install streamlit git+https://github.com/sidhulabs/  
+pip install streamlit git+https://github.com/sidhulabs/streamlit-elasticsearch-connection  
 ```
 
 
