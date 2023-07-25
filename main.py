@@ -12,10 +12,16 @@ with st.echo():
     conn
 
 
-with st.echo():
-    data = conn.query(index="kibana_sample_data_flights", query={"match_all": {}}, size=10_000)
-    data
+index = "kibana_sample_data_flights"
 
 with st.echo():
-    df = pd.json_normalize(data=data["hits"]["hits"])
-    st.dataframe(df)
+    df = conn.query(index=index)
+    df
+
+with st.echo():
+    df = conn.query(
+        index=index,
+        columns=["AvgTicketPrice", "Carrier"],
+        query={"bool": {"filter": [{"term": {"Carrier": "JetBeats"}}]}},
+    )
+    df

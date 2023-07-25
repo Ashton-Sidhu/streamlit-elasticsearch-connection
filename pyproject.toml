@@ -11,6 +11,7 @@ python = "^3.11"
 elasticsearch = "^8.8.2"
 streamlit = "^1.25.0"
 pandas = "^2.0.3"
+eland = "^8.7.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"

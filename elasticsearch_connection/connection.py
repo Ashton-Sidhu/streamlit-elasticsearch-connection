@@ -1,6 +1,8 @@
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
+import eland as ed
 import elasticsearch
+import pandas as pd
 from streamlit.connections import ExperimentalBaseConnection
 from streamlit.runtime.caching import cache_data
 
@@ -41,10 +43,23 @@ class ElasticsearchConnection(ExperimentalBaseConnection[elasticsearch.Elasticse
         # For clusters with no auth, i.e local deployments
         return es_client
 
-    def query(self, *, index: str, query: Dict[str, Any], ttl: int = 3600, **kwargs) -> Dict[str, Any]:
+    def query(
+        self,
+        *,
+        index: str,
+        columns: Optional[List[str]] = None,
+        query: Optional[Dict[str, Any]] = None,
+        ttl: int = 3600,
+        **kwargs
+    ) -> pd.DataFrame:
         @cache_data(ttl=ttl)
-        def _query(index, query, **kwargs) -> Dict[str, Any]:
-            return self.client.search(index=index, query=query, **kwargs).body
+        def _query(index, query, **kwargs) -> pd.DataFrame:
+            es_df = ed.DataFrame(self.client, es_index_pattern=index, columns=columns)
+
+            if query:
+                es_df = es_df.es_query(query=query)
+
+            return es_df.to_pandas()
 
         return _query(index=index, query=query, **kwargs)
 
