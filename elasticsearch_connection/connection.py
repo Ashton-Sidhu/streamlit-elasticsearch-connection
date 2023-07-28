@@ -29,10 +29,9 @@ class ElasticsearchConnection(ExperimentalBaseConnection[elasticsearch.Elasticse
         if not (cloud_id or hosts):
             raise RuntimeError("You must either provide a cloud_id or hosts url to connect to.")
 
-        if cloud_id:
-            es_client = elasticsearch.Elasticsearch(cloud_id=cloud_id)
-        else:
-            es_client = elasticsearch.Elasticsearch(hosts=hosts)
+        es_client = (
+            elasticsearch.Elasticsearch(cloud_id=cloud_id) if cloud_id else elasticsearch.Elasticsearch(hosts=hosts)
+        )
 
         # Use api authentication first if provided.
         if api_id:
